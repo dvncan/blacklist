@@ -35,7 +35,7 @@ contract BLS is IBLS, Ownable, ReportModel {
         string calldata reportReason
     ) internal {
         reportCount[addr]++;
-        Report memory report;
+        Report storage report = reports[addr][reports[addr].length - 1];
         report.reporter = msg.sender;
         report.reported = addr;
         report.record.push(Record(reportReason, block.timestamp));
@@ -46,7 +46,7 @@ contract BLS is IBLS, Ownable, ReportModel {
     function isReported(address addr) external view returns (bool) {
         return reportCount[addr] > 0;
     }
-    function getReport(address addr) external view returns (Record[] memory) {
-        return reports[addr].record;
+    function getReport(address addr) external view returns (Report[] memory) {
+        return reports[addr];
     }
 }

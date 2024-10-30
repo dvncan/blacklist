@@ -1,66 +1,19 @@
-## Foundry
+## Blacklist 
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+Blacklist was created for the public to report scams or malicious addresses. The report will be saved alongside the user address submitted. Each report will increment the report count potentially adding more credibility to the claim. 
 
-Foundry consists of:
+### How to report
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+reportAddress(
+    list of addresses used in the scam,
+    a link to the hosted report of the incident
+)
 
-## Documentation
 
-https://book.getfoundry.sh/
+Interface can be used within smart contracts to reject users addresses that have been involved in a scam
 
-## Usage
 
-### Build
+### Roadmap
 
-```shell
-$ forge build
-```
-
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+API - QueryAddress(userAddress) => returns true | false 
+SDK - Could be included in webapp to improve the overall user safety

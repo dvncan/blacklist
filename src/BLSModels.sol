@@ -9,7 +9,7 @@ interface IBLS {
     function isReported(address addr) external view returns (bool);
     function getReport(
         address addr
-    ) external view returns (ReportModel.Record[] memory);
+    ) external view returns (ReportModel.Report[] memory);
 }
 
 abstract contract ReportModel {
