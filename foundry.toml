@@ -4,11 +4,18 @@ test = "test"
 script = "script"
 out = "out"
 libs = ["lib"]
-remappings = ["forge-std/=lib/forge-std/src/"]
+remappings = [
+    "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+    "ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/",
+    "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+    "forge-std/=lib/forge-std/src/",
+    "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+]
 auto_detect_remappings = true
 libraries = []
 cache = true
 cache_path = "cache"
+snapshots = "snapshots"
 broadcast = "broadcast"
 allow_paths = []
 include_paths = []
@@ -32,8 +39,8 @@ ignored_warnings_from = []
 deny_warnings = false
 test_failures_file = "cache/test-failures"
 show_progress = false
+alphanet = false
 legacy_assertions = false
-assertions_revert = true
 ffi = false
 always_use_create_2_factory = false
 prompt_timeout = 120
@@ -61,12 +68,13 @@ bytecode_hash = "ipfs"
 cbor_metadata = true
 sparse_mode = false
 build_info = false
+eof = false
 transaction_timeout = 120
-alphanet = false
-unchecked_cheatcode_artifacts = false
+create2_library_salt = "0x0000000000000000000000000000000000000000000000000000000000000000"
 isolate = false
 disable_block_gas_limit = false
-create2_library_salt = "0x0000000000000000000000000000000000000000000000000000000000000000"
+assertions_revert = true
+unchecked_cheatcode_artifacts = false
 
 [[profile.default.fs_permissions]]
 access = "read"
