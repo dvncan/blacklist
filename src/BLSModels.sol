@@ -1,17 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-interface IBLS {
-    function reportAddress(
-        address[] memory addr,
-        string calldata uriReport
-    ) external;
-    function isReported(address addr) external view returns (bool);
-    function getReport(
-        address addr
-    ) external view returns (ReportModel.Report[] memory);
-}
-
 abstract contract ReportModel {
     event ScamReported(address indexed addr, string uriReport);
     error CannotReportYourself();
@@ -20,12 +9,21 @@ abstract contract ReportModel {
 
     struct Record {
         string uriReport;
+        address reporter;
+        address reported;
+        bytes32 transactionHash;
+        address currency;
+        uint256 amount;
         uint256 timestamp;
     }
 
     struct Report {
-        address reporter;
-        address reported;
-        Record[] record;
+        uint256 totalStolen;
+        mapping(address => uint256) victimMap;
+        Record[] records;
     }
 }
+
+// push to github
+
+// update structs
