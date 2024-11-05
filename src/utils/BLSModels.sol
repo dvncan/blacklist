@@ -14,8 +14,8 @@ abstract contract ReportModel {
     error AddressNotFound(address _addr);
     error CannotReportYourself();
     error AlreadyReported(); //?
-    error InvalidInput();
-    error NoReportsFound();
+    error InvalidInput(string message);
+    error NoReportsFound(Set[] reportedAddresses);
 
     struct TransactionHash {
         bytes32 transactionHash;
@@ -97,23 +97,20 @@ abstract contract EthereumScammerRegistry is IESR, ReportModel {
     mapping(address => ScammerReported) public scammerMap;
     mapping(address => ScammerAddressRecord[]) public publicReports;
     mapping(address => uint256[]) private userReportIndex;
-
+    mapping(address => Set[]) private userReportSet;
     function _addScammerReport(
         bool _reported,
         address _scammerAddress,
         bytes32 _transactionHash
     ) internal {
         if (_scammerAddress == address(0) || _scammerAddress == msg.sender)
-            revert InvalidInput();
-        if (_transactionHash == bytes32(0)) revert InvalidInput();
+            revert InvalidInput("address zero or self");
+        if (_transactionHash == bytes32(0)) revert InvalidInput("tx zero");
         ScammerReported storage scammer = scammerMap[_scammerAddress];
         if (!scammer.reported) {
             scammer.reported = _reported;
             scammer.scammerAddress = _scammerAddress;
-            // scammer.reportIndex[msg.sender] = 0;
-            scammer.transactionHash = new bytes32[](1);
-            // } else {
-            // scammer.reportIndex[msg.sender] = scammer.transactionHash.length;
+            scammer.transactionHash = new bytes32[](0);
         }
         scammer.transactionHash.push(_transactionHash);
         emit ScamTransactionReported(_scammerAddress, _transactionHash);
@@ -133,30 +130,36 @@ abstract contract EthereumScammerRegistry is IESR, ReportModel {
         bytes32 _txId,
         uint256 _timestamp
     ) internal {
-        if (_to == address(0)) revert InvalidInput();
-        if (_txId == bytes32(0)) revert InvalidInput();
-        if (_timestamp > block.timestamp) revert InvalidInput();
-        ScammerAddressRecord memory scammer = NewScammerAddressRecord(
+        if (_to == address(0)) revert InvalidInput("address zero");
+        if (_txId == bytes32(0)) revert InvalidInput("tx zero");
+        if (_timestamp > block.timestamp)
+            revert InvalidInput("timestamp invalid");
+        ScammerAddressRecord memory scammer = _newScammerAddressRecord(
             _stage,
             _to,
             _txId,
             _timestamp
         );
-        userReportIndex[msg.sender].push(publicReports[_to].length);
+        userReportSet[msg.sender].push(Set(publicReports[_to].length, _to));
         publicReports[_to].push(scammer);
         emit PublicReportUpdated(publicReports[_to]);
     }
 
-    function getAllMyReports(
-        address addr
-    ) external view returns (ScammerAddressRecord[] memory) {
-        if (addr == address(0)) revert InvalidInput();
-        if (userReportIndex[addr].length <= 0) revert NoReportsFound();
+    // WIP
+    function getAllMyReports()
+        external
+        view
+        returns (ScammerAddressRecord[] memory)
+    {
+        if (userReportSet[msg.sender].length <= 0)
+            revert NoReportsFound(userReportSet[msg.sender]);
         ScammerAddressRecord[] memory reports = new ScammerAddressRecord[](
-            userReportIndex[msg.sender].length
+            userReportSet[msg.sender].length
         );
-        for (uint256 i = 0; i < userReportIndex[msg.sender].length; i++) {
-            reports[i] = publicReports[addr][userReportIndex[msg.sender][i]];
+        for (uint256 i = 0; i < userReportSet[msg.sender].length; i++) {
+            reports[i] = publicReports[userReportSet[msg.sender][i].addr][
+                userReportSet[msg.sender][i].index
+            ];
         }
         return reports;
     }
