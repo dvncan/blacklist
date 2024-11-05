@@ -68,7 +68,10 @@ abstract contract Ownable is Context {
      */
     error OwnableInvalidOwner(address owner);
 
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event OwnershipTransferred(
+        address indexed previousOwner,
+        address indexed newOwner
+    );
 
     /**
      * @dev Initializes the contract setting the address provided by the deployer as the initial owner.

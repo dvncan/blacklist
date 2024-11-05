@@ -7,14 +7,14 @@ import {EthereumScammerRegistry} from "./utils/BLSModels.sol";
 contract Blacklist is Ownable, EthereumScammerRegistry {
     constructor() Ownable(msg.sender) {}
 
-    function ReportAddress(UserReport calldata report) external {
+    function reportAddress(UserReport calldata report) external {
         if (report.scammers.length <= 0 || report.transactions.length <= 0)
             revert InvalidInput();
         if (report.scammers.length != report.transactions.length)
             revert InvalidInput();
         for (uint8 i = 0; i < report.scammers.length; i++) {
-            AddScammerReport(true, report.scammers[i], report.transactions[i]);
-            AddScammerAddressRecord(
+            _addScammerReport(true, report.scammers[i], report.transactions[i]);
+            _addScammerAddressRecord(
                 i,
                 report.scammers[i],
                 report.transactions[i],

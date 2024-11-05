@@ -81,13 +81,13 @@ abstract contract ReportModel {
 
 interface IESR {
     // function reportAddress(address _addr, bytes32 _transactionHash) external;
-    function ReportAddress(ReportModel.UserReport calldata report) external;
+    function reportAddress(ReportModel.UserReport calldata report) external;
 
-    function IsAddressReported(address addr) external view returns (bool);
-    function GetAllAddressReports(
+    function isAddressReported(address addr) external view returns (bool);
+    function getAllAddressReports(
         address addr
     ) external view returns (ReportModel.ScammerAddressRecord[] memory);
-    function GetAllAddressTransactions(
+    function getAllAddressTransactions(
         address addr
     ) external view returns (bytes32[] calldata);
 }
@@ -98,7 +98,7 @@ abstract contract EthereumScammerRegistry is IESR, ReportModel {
     mapping(address => ScammerAddressRecord[]) public publicReports;
     mapping(address => uint256[]) private userReportIndex;
 
-    function AddScammerReport(
+    function _addScammerReport(
         bool _reported,
         address _scammerAddress,
         bytes32 _transactionHash
@@ -119,7 +119,7 @@ abstract contract EthereumScammerRegistry is IESR, ReportModel {
         emit ScamTransactionReported(_scammerAddress, _transactionHash);
     }
 
-    function NewScammerAddressRecord(
+    function _newScammerAddressRecord(
         uint8 _stage,
         address _to,
         bytes32 _txId,
@@ -127,7 +127,7 @@ abstract contract EthereumScammerRegistry is IESR, ReportModel {
     ) internal returns (ScammerAddressRecord memory) {
         return ScammerAddressRecord(_stage, _to, _txId, _timestamp);
     }
-    function AddScammerAddressRecord(
+    function _addScammerAddressRecord(
         uint8 _stage,
         address _to,
         bytes32 _txId,
@@ -147,7 +147,7 @@ abstract contract EthereumScammerRegistry is IESR, ReportModel {
         emit PublicReportUpdated(publicReports[_to]);
     }
 
-    function GetAllMyReports(
+    function getAllMyReports(
         address addr
     ) external view returns (ScammerAddressRecord[] memory) {
         if (addr == address(0)) revert InvalidInput();
@@ -161,17 +161,17 @@ abstract contract EthereumScammerRegistry is IESR, ReportModel {
         return reports;
     }
 
-    function GetAllAddressTransactions(
+    function getAllAddressTransactions(
         address addr
     ) external view returns (bytes32[] memory) {
         return scammerMap[addr].transactionHash;
     }
 
-    function IsAddressReported(address addr) external view returns (bool) {
+    function isAddressReported(address addr) external view returns (bool) {
         return scammerMap[addr].reported;
     }
 
-    function GetAllAddressReports(
+    function getAllAddressReports(
         address addr
     ) external view override returns (ScammerAddressRecord[] memory) {
         return publicReports[addr];
