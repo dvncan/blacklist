@@ -3,13 +3,13 @@ pragma solidity ^0.8.24;
 
 import {Script} from "lib/forge-std/src/Script.sol";
 
-import {BLS} from "../src/BLS.sol";
+import {Blacklist} from "../src/BLS_NEW.sol";
 
 contract DeployBLS is Script {
     function run() external {
         vm.startBroadcast();
 
-        BLS bls = BLS(0x27Ebe9e152f14b3e00185b04FEb3Db22C25279eE);
+        Blacklist bls = Blacklist(0x27Ebe9e152f14b3e00185b04FEb3Db22C25279eE);
 
         address[] memory addresses = new address[](1);
         addresses[0] = 0x88EC4FaDF351d034e2dCf395883d6F2f12895D70;
