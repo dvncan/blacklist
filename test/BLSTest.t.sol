@@ -30,7 +30,7 @@ contract BLSTest is Test {
         ] = 0x15a9ccd3fbc2dc1a07fa2b6f44bfa189619a672970650ebebc52665fe24c4e5e;
 
         vm.startPrank(owner);
-        bls.reportAddress(ReportModel.UserReport(addresses, byt));
+        bls.reportAddress(ReportModel.UserReport(1, addresses, byt));
         vm.stopPrank();
 
         assertTrue(bls.isAddressReported(addresses[0]));
@@ -45,10 +45,11 @@ contract BLSTest is Test {
         assertEq(reports[0].stage, 1);
         assertEq(reports[0].timestamp, block.timestamp);
 
-        bytes32[] memory txs = bls.getAllAddressTransactions(addresses[1]);
+        ReportModel.TransactionDetails[] memory txs = bls
+            .getAllAddressTransactions(addresses[1]);
         assertEq(txs.length, 1);
-        assertEq(txs[0], byt[1]);
-
+        assertEq(txs[0].transactionHash, byt[1]);
+        assertEq(txs[0].chainId, 1);
         vm.startPrank(owner);
         ReportModel.ScammerAddressRecord[] memory reports2 = bls
             .getAllMyReports();
@@ -91,7 +92,7 @@ contract BLSTest is Test {
         address[] memory listOfBadPeople = getBadPeople(4);
         bytes32[] memory txs = getTxns(4);
         vm.startPrank(alice);
-        bls.reportAddress(ReportModel.UserReport(listOfBadPeople, txs));
+        bls.reportAddress(ReportModel.UserReport(1, listOfBadPeople, txs));
         vm.stopPrank();
 
         for (uint j = 0; j < listOfBadPeople.length; j++) {

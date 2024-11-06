@@ -35,12 +35,10 @@ abstract contract ReportModel {
     /// @dev scammers is the list of addresses that are part of the scam.
     /// @dev transactions is the list of transactions that are part of the scam.
     struct UserReport {
+        uint256 chainId;
         address[] scammers; // msg.sender -> 1 -> 2 -> 3 -> 4
         bytes32[] transactions; // 1 -> 2 -> 3
     }
-    // add1                                         addr2                                       addr3
-    // msg.sender => [0x88EC4FaDF351d034e2dCf395883d6F2f12895D70 => 0x27Ebe9e152f14b3e00185b04FEb3Db22C25279eE => 0x88EC4FaDF351d034e2dCf395883d6F2f12895D70]
-    //tx1                                            tx2                                            tx3
 
     // msg.sender => tx1 => 0x88 => tx2 => 0x27 =>  tx3 => 0x88EC
     // struct report {
@@ -104,7 +102,7 @@ interface IESR {
     ) external view returns (ReportModel.ScammerAddressRecord[] memory);
     function getAllAddressTransactions(
         address addr
-    ) external view returns (TransactionDetails[] calldata);
+    ) external view returns (ReportModel.TransactionDetails[] calldata);
 }
 
 // update structs
@@ -125,7 +123,7 @@ abstract contract EthereumScammerRegistry is IESR, ReportModel {
         if (!scammer.reported) {
             scammer.reported = _reported;
             scammer.scammerAddress = _scammerAddress;
-            scammer.transaction = new bytes32[](0);
+            scammer.transaction = new TransactionDetails[](0);
         }
         scammer.transaction.push(
             TransactionDetails(_transactionHash, _chainId)
@@ -184,7 +182,9 @@ abstract contract EthereumScammerRegistry is IESR, ReportModel {
     function getAllAddressTransactions(
         address addr
     ) external view returns (TransactionDetails[] memory) {
-        return scammerMap[addr].transactionHash;
+        TransactionDetails[] memory returnTransactions = scammerMap[addr]
+            .transaction;
+        return returnTransactions;
     }
 
     function isAddressReported(address addr) external view returns (bool) {

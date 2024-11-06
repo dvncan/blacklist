@@ -13,7 +13,12 @@ contract Blacklist is Ownable, EthereumScammerRegistry {
         if (report.scammers.length != report.transactions.length)
             revert("length");
         for (uint8 i = 0; i < report.scammers.length; i++) {
-            _addScammerReport(true, report.scammers[i], report.transactions[i]);
+            _addScammerReport(
+                true,
+                report.scammers[i],
+                report.transactions[i],
+                report.chainId
+            );
             _addScammerAddressRecord(
                 i + 1,
                 report.scammers[i],

@@ -1,3 +1,3 @@
-BLSTest:test_reportAddresses_getAllReports() (gas: 628614)
-BLSTest:test_reportRandom(uint8) (runs: 257, μ: 59431926, ~: 25611161)
-BLSTest:test_reportRandomAddresses() (gas: 806957)
+BLSTest:test_reportAddresses_getAllReports() (gas: 698750)
+BLSTest:test_reportRandom(uint8) (runs: 256, μ: 62237059, ~: 24919928)
+BLSTest:test_reportRandomAddresses() (gas: 896784)

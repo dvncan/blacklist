@@ -19,7 +19,7 @@ contract DeployBLS is Script {
             0
         ] = 0x9a1ffbe0d0a8eb3eb197552ced5afe913162b3e455e41dd22905b3133a50117b;
 
-        bls.reportAddress(ReportModel.UserReport(addresses, byt));
+        bls.reportAddress(ReportModel.UserReport(1, addresses, byt));
 
         vm.stopBroadcast();
         // console.log("BLS deployed at", address(bls));
