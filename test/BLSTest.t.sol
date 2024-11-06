@@ -21,15 +21,9 @@ contract BLSTest is Test {
         addresses[1] = 0x7DBB4bdCfE614398D1a68ecc219F15280d0959E0;
         addresses[2] = 0x444ab79616b4a790dC7Ffa9cEb8Dc82Cbc47cCDD;
         bytes32[] memory byt = new bytes32[](3);
-        byt[
-            0
-        ] = 0xcbe633433eee6c07bd6f5a0d54541c81f6e5281c2bdf60001c4e12d8051dafeb;
-        byt[
-            1
-        ] = 0x50ec052a3705c1d1a4639485ca814596ffa89a41ae4df3edf7bfde20e8577a9c;
-        byt[
-            2
-        ] = 0x15a9ccd3fbc2dc1a07fa2b6f44bfa189619a672970650ebebc52665fe24c4e5e;
+        byt[0] = 0xcbe633433eee6c07bd6f5a0d54541c81f6e5281c2bdf60001c4e12d8051dafeb;
+        byt[1] = 0x50ec052a3705c1d1a4639485ca814596ffa89a41ae4df3edf7bfde20e8577a9c;
+        byt[2] = 0x15a9ccd3fbc2dc1a07fa2b6f44bfa189619a672970650ebebc52665fe24c4e5e;
 
         vm.startPrank(owner);
         bls.reportAddress(ReportModel.UserReport(1, addresses, byt));
@@ -38,8 +32,7 @@ contract BLSTest is Test {
         assertTrue(bls.isAddressReported(addresses[0]));
         assertTrue(bls.isAddressReported(addresses[1]));
         assertTrue(bls.isAddressReported(addresses[2]));
-        ReportModel.ScammerAddressRecord[] memory reports = bls
-            .getAllAddressReports(addresses[0]);
+        ReportModel.ScammerAddressRecord[] memory reports = bls.getAllAddressReports(addresses[0]);
 
         assertEq(reports.length, 1);
         assertEq(reports[0].to, addresses[0]);
@@ -47,14 +40,12 @@ contract BLSTest is Test {
         assertEq(reports[0].stage, 1);
         assertEq(reports[0].timestamp, block.timestamp);
 
-        ReportModel.TransactionDetails[] memory txs = bls
-            .getAllAddressTransactions(addresses[1]);
+        ReportModel.TransactionDetails[] memory txs = bls.getAllAddressTransactions(addresses[1]);
         assertEq(txs.length, 1);
         assertEq(txs[0].transactionHash, byt[1]);
         assertEq(txs[0].chainId, 1);
         vm.startPrank(owner);
-        ReportModel.ScammerAddressRecord[] memory reports2 = bls
-            .getAllMyReports();
+        ReportModel.ScammerAddressRecord[] memory reports2 = bls.getAllMyReports();
         vm.stopPrank();
         assertEq(reports2.length, 3);
         assertEq(reports2[0].to, addresses[0]);
@@ -98,8 +89,7 @@ contract BLSTest is Test {
         vm.stopPrank();
 
         for (uint256 j = 0; j < listOfBadPeople.length; j++) {
-            ReportModel.ScammerAddressRecord[] memory reports = bls
-                .getAllAddressReports(listOfBadPeople[j]);
+            ReportModel.ScammerAddressRecord[] memory reports = bls.getAllAddressReports(listOfBadPeople[j]);
             assertEq(reports.length, 1);
             assertEq(reports[0].to, listOfBadPeople[j]);
             assertEq(reports[0].txIn, txs[j]);
@@ -144,19 +134,11 @@ contract BLSTest is Test {
         address[] memory addresses = new address[](1);
         addresses[0] = 0x58172e0b0fFB243D6F691d5b30152b6032f12a06;
         bytes32[] memory byt = new bytes32[](1);
-        byt[
-            0
-        ] = 0xcbe633433eee6c07bd6f5a0d54541c81f6e5281c2bdf60001c4e12d8051dafeb;
+        byt[0] = 0xcbe633433eee6c07bd6f5a0d54541c81f6e5281c2bdf60001c4e12d8051dafeb;
         address nonOwner = vm.randomAddress();
 
-        ReportModel.ScammerAddressRecord[]
-            memory reports = new ReportModel.ScammerAddressRecord[](1);
-        reports[0] = ReportModel.ScammerAddressRecord(
-            1,
-            addresses[0],
-            byt[0],
-            block.timestamp
-        );
+        ReportModel.ScammerAddressRecord[] memory reports = new ReportModel.ScammerAddressRecord[](1);
+        reports[0] = ReportModel.ScammerAddressRecord(1, addresses[0], byt[0], block.timestamp);
         vm.expectEmit(true, true, true, true);
         emit ReportModel.ScamTransactionReported(addresses[0], byt[0]);
         vm.expectEmit(true, true, true, true);

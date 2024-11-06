@@ -16,18 +16,8 @@ contract Blacklist is Ownable, EthereumScammerRegistry {
             revert InvalidInput("lengths!=!");
         }
         for (uint8 i = 0; i < report.scammers.length; i++) {
-            _addScammerReport(
-                true,
-                report.scammers[i],
-                report.transactions[i],
-                report.chainId
-            );
-            _addScammerAddressRecord(
-                i + 1,
-                report.scammers[i],
-                report.transactions[i],
-                block.timestamp
-            );
+            _addScammerReport(true, report.scammers[i], report.transactions[i], report.chainId);
+            _addScammerAddressRecord(i + 1, report.scammers[i], report.transactions[i], block.timestamp);
         }
     }
 }
