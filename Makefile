@@ -23,9 +23,6 @@ remove :; rm -rf .gitmodules && rm -rf .git/modules/* && rm -rf lib && touch .gi
 install :; forge install https://github.com/OpenZeppelin/openzeppelin-contracts.git  &&  forge install foundry-rs/forge-std
 
 
-# Optional slither
-# slither :; slither ./src 
-
 format :; prettier --write src/**/*.sol && prettier --write src/*.sol
 
 # solhint should be installed globally
