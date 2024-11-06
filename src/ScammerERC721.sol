@@ -12,16 +12,13 @@ contract SCAMMER is ERC721, Ownable {
 
     event ngmi();
 
-    constructor(
-        address initialOwner
-    ) ERC721("SCAMMER", "BICH") Ownable(initialOwner) {
+    constructor(address initialOwner) ERC721("SCAMMER", "BICH") Ownable(initialOwner) {
         o = payable(initialOwner);
         ethAmount = 11.2 ether;
     }
 
     function _baseURI() internal pure override returns (string memory) {
-        return
-            "https://arweave.net/drPyQNNAXnu3iXsurAe2UQ-FQvO9vmo2ATQYj9tlnug";
+        return "https://arweave.net/drPyQNNAXnu3iXsurAe2UQ-FQvO9vmo2ATQYj9tlnug";
     }
 
     function safeMint(address to) public onlyOwner {
@@ -35,22 +32,13 @@ contract SCAMMER is ERC721, Ownable {
         _transfer(msg.sender, address(0), tokenId);
     }
 
-    function transferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public virtual override {
+    function transferFrom(address from, address to, uint256 tokenId) public virtual override {
         tokenId = _nextTokenId++;
         _safeMint(from, tokenId);
         emit ngmi();
     }
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) public virtual override {
+    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public virtual override {
         tokenId = _nextTokenId++;
         _safeMint(from, tokenId);
         emit ngmi();

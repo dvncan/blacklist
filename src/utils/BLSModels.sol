@@ -1,16 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
+
 import {TokenType} from "./TokenTypes.sol";
+
 abstract contract ReportModel {
     event ScamTransactionReported(
         address indexed _scammerAddress,
         bytes32 _transactionHash
     );
 
-    event PublicReportUpdated(ReportModel.ScammerAddressRecord[] publicReports);
+    event PublicReportUpdated(ReportModel.ScammerAddressRecord[] publicReport);
 
     event ScamReported(address indexed _addr, bytes32 _transactionHash);
     event Success(bool);
+
     error AddressNotFound(address _addr);
     error CannotReportYourself();
     error AlreadyReported(); //?
@@ -40,12 +43,6 @@ abstract contract ReportModel {
         bytes32[] transactions; // 1 -> 2 -> 3
     }
 
-    // msg.sender => tx1 => 0x88 => tx2 => 0x27 =>  tx3 => 0x88EC
-    // struct report {
-    //     address[] addresses;
-    //     bytes32[] transactions;
-    // }
-
     struct Record {
         address scammer;
         bytes32 transactionHash;
@@ -66,8 +63,8 @@ abstract contract ReportModel {
         bool reported;
         address scammerAddress;
         TransactionDetails[] transaction;
-        // mapping(address => uint256) reportIndex;
     }
+    // mapping(address => uint256) reportIndex;
 
     struct ScammerAddressRecord {
         uint8 stage;
@@ -80,6 +77,7 @@ abstract contract ReportModel {
     // record1 = {uriReport, scammer, transactionDetails}
     // scammer = {reported, scammerAddress, transactionHash}
     // transactionHash = {transactionHash, tokenType, currency, value, timestamp}
+
     struct Set {
         uint256 index;
         address addr;
@@ -110,14 +108,16 @@ abstract contract EthereumScammerRegistry is IESR, ReportModel {
     mapping(address => ScammerReported) public scammerMap;
     mapping(address => ScammerAddressRecord[]) public publicReports;
     mapping(address => Set[]) private userReportSet;
+
     function _addScammerReport(
         bool _reported,
         address _scammerAddress,
         bytes32 _transactionHash,
         uint256 _chainId
     ) internal {
-        if (_scammerAddress == address(0) || _scammerAddress == msg.sender)
+        if (_scammerAddress == address(0) || _scammerAddress == msg.sender) {
             revert InvalidInput("address zero or self");
+        }
         if (_transactionHash == bytes32(0)) revert InvalidInput("tx zero");
         ScammerReported storage scammer = scammerMap[_scammerAddress];
         if (!scammer.reported) {
@@ -136,9 +136,10 @@ abstract contract EthereumScammerRegistry is IESR, ReportModel {
         address _to,
         bytes32 _txId,
         uint256 _timestamp
-    ) internal returns (ScammerAddressRecord memory) {
+    ) internal pure returns (ScammerAddressRecord memory) {
         return ScammerAddressRecord(_stage, _to, _txId, _timestamp);
     }
+
     function _addScammerAddressRecord(
         uint8 _stage,
         address _to,
@@ -147,8 +148,9 @@ abstract contract EthereumScammerRegistry is IESR, ReportModel {
     ) internal {
         if (_to == address(0)) revert InvalidInput("address zero");
         if (_txId == bytes32(0)) revert InvalidInput("tx zero");
-        if (_timestamp > block.timestamp)
+        if (_timestamp > block.timestamp) {
             revert InvalidInput("timestamp invalid");
+        }
         ScammerAddressRecord memory scammer = _newScammerAddressRecord(
             _stage,
             _to,
@@ -166,8 +168,9 @@ abstract contract EthereumScammerRegistry is IESR, ReportModel {
         view
         returns (ScammerAddressRecord[] memory)
     {
-        if (userReportSet[msg.sender].length <= 0)
+        if (userReportSet[msg.sender].length <= 0) {
             revert NoReportsFound(userReportSet[msg.sender]);
+        }
         ScammerAddressRecord[] memory reports = new ScammerAddressRecord[](
             userReportSet[msg.sender].length
         );

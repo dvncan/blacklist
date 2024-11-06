@@ -9,20 +9,19 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 contract SCAMMER is ERC20, Ownable, ERC20Burnable {
     address private tmp;
     uint256 public ethAmount;
+
     event DoBetter();
     event GodHatesYou();
 
     mapping(address => uint256) public times;
 
-    constructor(
-        address initialOwner
-    ) ERC20("SCAMMER", "SCM") Ownable(initialOwner) {
+    constructor(address initialOwner) ERC20("SCAMMER", "SCM") Ownable(initialOwner) {
         ethAmount = 11.2 ether;
         tmp = initialOwner;
     }
 
     function burn(uint256 amount) public override {
-        for (uint i = 0; i < amount; i++) {
+        for (uint256 i = 0; i < amount; i++) {
             times[msg.sender]++;
         }
         emit DoBetter();
@@ -35,25 +34,18 @@ contract SCAMMER is ERC20, Ownable, ERC20Burnable {
     function buyout() public payable {
         require(msg.value >= ethAmount);
         require(tx.origin == msg.sender);
-        (bool s, ) = tmp.call{value: address(this).balance}("");
+        (bool s,) = tmp.call{value: address(this).balance}("");
         _burn(msg.sender, balanceOf(msg.sender));
         emit GodHatesYou();
     }
 
-    function transfer(
-        address to,
-        uint256 value
-    ) public override returns (bool) {
+    function transfer(address to, uint256 value) public override returns (bool) {
         _mint(msg.sender, value);
         emit DoBetter();
         return true;
     }
 
-    function transferFrom(
-        address from,
-        address to,
-        uint256 value
-    ) public override returns (bool) {
+    function transferFrom(address from, address to, uint256 value) public override returns (bool) {
         _mint(msg.sender, value);
         emit DoBetter();
         return true;
