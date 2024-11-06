@@ -1,0 +1,3 @@
+BLSTest:test_reportAddresses_getAllReports() (gas: 628614)
+BLSTest:test_reportRandom(uint8) (runs: 257, μ: 59431926, ~: 25611161)
+BLSTest:test_reportRandomAddresses() (gas: 806957)

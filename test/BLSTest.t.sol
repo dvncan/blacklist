@@ -14,14 +14,11 @@ contract BLSTest is Test {
     }
 
     function test_reportAddresses_getAllReports() public {
-        address[] memory addresses;
-        bytes32[] memory byt;
-        addresses = new address[](3);
+        address[] memory addresses = new address[](3);
         addresses[0] = 0x58172e0b0fFB243D6F691d5b30152b6032f12a06;
         addresses[1] = 0x7DBB4bdCfE614398D1a68ecc219F15280d0959E0;
         addresses[2] = 0x444ab79616b4a790dC7Ffa9cEb8Dc82Cbc47cCDD;
-
-        byt = new bytes32[](3);
+        bytes32[] memory byt = new bytes32[](3);
         byt[
             0
         ] = 0xcbe633433eee6c07bd6f5a0d54541c81f6e5281c2bdf60001c4e12d8051dafeb;
@@ -106,7 +103,7 @@ contract BLSTest is Test {
         }
     }
 
-    function test_reportRandom(uint n) public {
+    function test_reportRandom(uint8 n) public {
         for (uint i = 0; i < n; i++) test_reportRandomAddresses();
     }
 }

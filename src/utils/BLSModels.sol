@@ -17,14 +17,23 @@ abstract contract ReportModel {
     error InvalidInput(string message);
     error NoReportsFound(Set[] reportedAddresses);
 
-    struct TransactionHash {
-        bytes32 transactionHash;
-        TokenType tokenType;
-        address currency;
-        uint256 value;
-        uint256 timestamp;
+    // struct TransactionHash {
+    //     bytes32 transactionHash;
+    //     TokenType tokenType;
+    //     address currency;
+    //     uint256 value;
+    //     uint256 timestamp;
+    // }
+
+    // Is this helpful? should I add another function to add the report?
+    struct PoliceReport {
+        string uri;
+        UserReport report;
     }
 
+    /// @notice UserReport is a struct that contains the addresses and transactions of a scammer.
+    /// @dev scammers is the list of addresses that are part of the scam.
+    /// @dev transactions is the list of transactions that are part of the scam.
     struct UserReport {
         address[] scammers; // msg.sender -> 1 -> 2 -> 3 -> 4
         bytes32[] transactions; // 1 -> 2 -> 3
@@ -49,10 +58,16 @@ abstract contract ReportModel {
         mapping(address => uint256) victimMap;
         Record[] records;
     }
+
+    struct TransactionDetails {
+        bytes32 transactionHash;
+        uint256 chainId;
+    }
+
     struct ScammerReported {
         bool reported;
         address scammerAddress;
-        bytes32[] transactionHash;
+        TransactionDetails[] transaction;
         // mapping(address => uint256) reportIndex;
     }
 
@@ -89,19 +104,19 @@ interface IESR {
     ) external view returns (ReportModel.ScammerAddressRecord[] memory);
     function getAllAddressTransactions(
         address addr
-    ) external view returns (bytes32[] calldata);
+    ) external view returns (TransactionDetails[] calldata);
 }
 
 // update structs
 abstract contract EthereumScammerRegistry is IESR, ReportModel {
     mapping(address => ScammerReported) public scammerMap;
     mapping(address => ScammerAddressRecord[]) public publicReports;
-    mapping(address => uint256[]) private userReportIndex;
     mapping(address => Set[]) private userReportSet;
     function _addScammerReport(
         bool _reported,
         address _scammerAddress,
-        bytes32 _transactionHash
+        bytes32 _transactionHash,
+        uint256 _chainId
     ) internal {
         if (_scammerAddress == address(0) || _scammerAddress == msg.sender)
             revert InvalidInput("address zero or self");
@@ -110,9 +125,11 @@ abstract contract EthereumScammerRegistry is IESR, ReportModel {
         if (!scammer.reported) {
             scammer.reported = _reported;
             scammer.scammerAddress = _scammerAddress;
-            scammer.transactionHash = new bytes32[](0);
+            scammer.transaction = new bytes32[](0);
         }
-        scammer.transactionHash.push(_transactionHash);
+        scammer.transaction.push(
+            TransactionDetails(_transactionHash, _chainId)
+        );
         emit ScamTransactionReported(_scammerAddress, _transactionHash);
     }
 
@@ -166,7 +183,7 @@ abstract contract EthereumScammerRegistry is IESR, ReportModel {
 
     function getAllAddressTransactions(
         address addr
-    ) external view returns (bytes32[] memory) {
+    ) external view returns (TransactionDetails[] memory) {
         return scammerMap[addr].transactionHash;
     }
 
