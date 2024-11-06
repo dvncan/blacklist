@@ -1,66 +1,50 @@
-## Foundry
+## Blacklist 
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+Blacklist was created for the public to report scams or malicious addresses. Each report is a set of addresses and transactions which demonstrate funds leaving your your wallet.
 
-Foundry consists of:
+`publicReports` is a map of address => `ScammerAddressRecord[]` 
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+A report should be the series of transactions & addresses demonstraighting the route of funds from your wallet[A] to another wallet[D]; via wallet[B], [C], & [D].
 
-## Documentation
+To recover addresses you have reported, use getAllMyReports(); there is a gas limit on this function of the length has to be within uint8.
 
-https://book.getfoundry.sh/
+To check if an Address is Reported you can use isAddressReported(address addr) which will returns(bool).
 
-## Usage
+getAllAddressTransactions(addr) returns TransactionDetails[] 
 
-### Build
+TransactionDetails{
+    bytes32 transactionHash;
+    uint256 chainId;
+}
 
-```shell
-$ forge build
+### How to report
+
+```solidity
+reportAddress(
+    UserReport(address[] memory addressList, bytes32[] memory transactionList)
+);
+
+```solidity
+struct UserReport {
+        address[] scammers; // msg.sender -> 1 -> 2 -> 3 -> 4
+        bytes32[] transactions; // 1 -> 2 -> 3
+}
 ```
 
-### Test
+## Use-Cases
+Interface can be used within smart contracts to reject users addresses that have been involved in a scam. 
 
-```shell
-$ forge test
-```
+### How to use
 
-### Format
+Anyone can use the abi to read isAddressReported() for any address you are curious about.
+Importing the Interface IESR will give any contract a lightweight way to query if an address has been involved in a scam & the transaction details. 
 
-```shell
-$ forge fmt
-```
+### TypeScript WebApp
 
-### Gas Snapshots
+add the abi to your project and you can use ethers or wagmi to read the desired value from the Scammer Registry.
 
-```shell
-$ forge snapshot
-```
 
-### Anvil
+### Roadmap
 
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+API - QueryAddress(userAddress) => returns true | false 
+SDK - Could be included in webapp to improve the overall user safety
