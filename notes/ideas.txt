@@ -1,0 +1,14 @@
+Add an Identifier for the wallet to be publicly shamed but also could use for off chain Identifier.
+
+I could mint a token to the wallet ERC721 would be the ideal. Non transferrable. This NFT could hold more of the string information. 
+
+Problem with adding URI atm is string's are expensive to store on chain. 
+By keeping the minimum amount of data stored on chain, gas costs should be as low as possible
+
+Mint NFT with metadata which can be updated with important information. 
+
+Deployment Script Command
+forge script script/DeployBLS.s.sol --private-key 0x4b55fe53d5a47599fcd1335de6569ad7ed8845ba18616dbc3c705a8ed3e75781 --rpc-url https://eth-sepolia.g.alchemy.com/v2/3OOkKP3ZMP_SS5SEGHgUYiPn9J8f_sxP --etherscan-api-key IP122H4DC4GK9UKHCXBKWRKZAYN6D3PMQW --verify --broadcast
+
+Report Scam Script Command
+forge script script/ReportScam.s.sol --private-key 0x4b55fe53d5a47599fcd1335de6569ad7ed8845ba18616dbc3c705a8ed3e75781 --rpc-url https://eth-sepolia.g.alchemy.com/v2/3OOkKP3ZMP_SS5SEGHgUYiPn9J8f_sxP --broadcast
