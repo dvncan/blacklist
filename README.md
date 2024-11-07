@@ -31,6 +31,75 @@ struct UserReport {
 }
 ```
 
+### Other Data Types:
+```solidity
+    /// @notice TransactionDetails is a struct that contains the transaction hash and chain id of a transaction.
+    /// @dev transactionHash is the hash of the transaction.
+    /// @dev chainId is the chain id of the transaction.
+    struct TransactionDetails {
+        bytes32 transactionHash;
+        uint256 chainId;
+    }
+
+    /// @notice ScammerReported is a struct that contains the reported status, scammer address, and transaction details of a scammer.
+    /// @dev reported is the reported status of the scammer.
+    /// @dev scammerAddress is the address of the scammer.
+    /// @dev transaction is the list of transaction details of the scammer.
+    struct ScammerReported {
+        bool reported;
+        address scammerAddress;
+        TransactionDetails[] transaction;
+    }
+
+    /// @notice ScammerAddressRecord is a struct that contains the stage, address, transaction hash, and timestamp of a scammer.
+    /// @dev stage is the stage of the scammer.
+    /// @dev to is the address of the scammer.
+    /// @dev txIn is the transaction hash of the scammer.
+    /// @dev timestamp is the timestamp of the transaction.
+    struct ScammerAddressRecord {
+        uint8 stage;
+        address to;
+        bytes32 txIn;
+        uint256 timestamp;
+    }
+
+    /// @notice Set is a struct that contains the index and address of a scammer.
+    /// @dev index is the index of the scammer.
+    /// @dev addr is the address of the scammer.
+    struct Set {
+        uint256 index;
+        address addr;
+    }
+```
+
+### Public Mappings
+- mappings are for mapping scammer address's to the fraudulent transaction hash.
+- when a scammer is laundering money they will use new addresses to create links in the chain
+- report the entire chain as two lists reportAddress([address1, address2, address3, ..., addressN], [transaction1, transaction2, transaction3, ..., transactionN]), this will add all addresses and transactions to the mappings
+```solidity
+    mapping(address => ScammerReported) public scammerMap;
+    mapping(address => ScammerAddressRecord[]) public publicReports;
+    mapping(address => Set[]) private userReportSet;
+```
+
+### Getters
+- provide easy access to querying data
+- for example querying an address for scammer use `isAddressReported()`
+```solidity
+    function getAllAddressTransactions(address addr) external view returns (TransactionDetails[] memory) {
+        TransactionDetails[] memory returnTransactions = scammerMap[addr].transaction;
+        return returnTransactions;
+    }
+
+    function isAddressReported(address addr) external view returns (bool) {
+        return scammerMap[addr].reported;
+    }
+
+    function getAllAddressReports(address addr) external view override returns (ScammerAddressRecord[] memory) {
+        return publicReports[addr];
+    }
+```
+
 ## Use-Cases
 Interface can be used within smart contracts to reject users addresses that have been involved in a scam. 
 

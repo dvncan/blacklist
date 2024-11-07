@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {TokenType} from "./TokenTypes.sol";
-
 abstract contract ReportModel {
     event ScamTransactionReported(
         address indexed _scammerAddress,
@@ -11,28 +9,8 @@ abstract contract ReportModel {
 
     event PublicReportUpdated(ReportModel.ScammerAddressRecord[] publicReport);
 
-    event ScamReported(address indexed _addr, bytes32 _transactionHash);
-    event Success(bool);
-
-    error AddressNotFound(address _addr);
-    error CannotReportYourself();
-    error AlreadyReported(); //?
     error InvalidInput(string message);
     error NoReportsFound(Set[] reportedAddresses);
-
-    // struct TransactionHash {
-    //     bytes32 transactionHash;
-    //     TokenType tokenType;
-    //     address currency;
-    //     uint256 value;
-    //     uint256 timestamp;
-    // }
-
-    // Is this helpful? should I add another function to add the report?
-    struct PoliceReport {
-        string uri;
-        UserReport report;
-    }
 
     /// @notice UserReport is a struct that contains the addresses and transactions of a scammer.
     /// @dev scammers is the list of addresses that are part of the scam.
@@ -43,51 +21,43 @@ abstract contract ReportModel {
         bytes32[] transactions; // 1 -> 2 -> 3
     }
 
-    struct Record {
-        address scammer;
-        bytes32 transactionHash;
-        uint256 timestamp;
-    }
-
-    struct Report {
-        mapping(address => uint256) victimMap;
-        Record[] records;
-    }
-
+    /// @notice TransactionDetails is a struct that contains the transaction hash and chain id of a transaction.
+    /// @dev transactionHash is the hash of the transaction.
+    /// @dev chainId is the chain id of the transaction.
     struct TransactionDetails {
         bytes32 transactionHash;
         uint256 chainId;
     }
 
+    /// @notice ScammerReported is a struct that contains the reported status, scammer address, and transaction details of a scammer.
+    /// @dev reported is the reported status of the scammer.
+    /// @dev scammerAddress is the address of the scammer.
+    /// @dev transaction is the list of transaction details of the scammer.
     struct ScammerReported {
         bool reported;
         address scammerAddress;
         TransactionDetails[] transaction;
     }
-    // mapping(address => uint256) reportIndex;
 
+    /// @notice ScammerAddressRecord is a struct that contains the stage, address, transaction hash, and timestamp of a scammer.
+    /// @dev stage is the stage of the scammer.
+    /// @dev to is the address of the scammer.
+    /// @dev txIn is the transaction hash of the scammer.
+    /// @dev timestamp is the timestamp of the transaction.
     struct ScammerAddressRecord {
         uint8 stage;
         address to;
         bytes32 txIn;
         uint256 timestamp;
     }
-    // publicReport[address].victimMap = msg.sender
-    // publicReport[address].records = [record1, record2, record3]
-    // record1 = {uriReport, scammer, transactionDetails}
-    // scammer = {reported, scammerAddress, transactionHash}
-    // transactionHash = {transactionHash, tokenType, currency, value, timestamp}
 
+    /// @notice Set is a struct that contains the index and address of a scammer.
+    /// @dev index is the index of the scammer.
+    /// @dev addr is the address of the scammer.
     struct Set {
         uint256 index;
         address addr;
     }
-    // struct ScammerReport {
-    //     // mapping(address => uint256) reportIndex;
-    //     // ScammerAddressRecord[] records;
-    //     mapping(address => ScammerAddressRecord) records;
-    // }
-    // [true, 0x123, 0xsdsds, 0xsdsdsd, 232312121]
 }
 
 interface IESR {
@@ -103,7 +73,6 @@ interface IESR {
     ) external view returns (ReportModel.TransactionDetails[] calldata);
 }
 
-// update structs
 abstract contract EthereumScammerRegistry is IESR, ReportModel {
     mapping(address => ScammerReported) public scammerMap;
     mapping(address => ScammerAddressRecord[]) public publicReports;
