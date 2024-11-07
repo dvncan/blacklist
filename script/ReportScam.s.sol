@@ -16,11 +16,12 @@ contract DeployBLS is Script {
         addresses[0] = 0x88EC4FaDF351d034e2dCf395883d6F2f12895D70;
 
         bytes32[] memory byt = new bytes32[](1);
-        byt[0] = 0x9a1ffbe0d0a8eb3eb197552ced5afe913162b3e455e41dd22905b3133a50117b;
+        byt[
+            0
+        ] = 0x9a1ffbe0d0a8eb3eb197552ced5afe913162b3e455e41dd22905b3133a50117b;
 
         bls.reportAddress(ReportModel.UserReport(1, addresses, byt));
 
         vm.stopBroadcast();
-        // console.log("BLS deployed at", address(bls));
     }
 }
