@@ -1,5 +1,8 @@
 ## Blacklist 
 
+### Updated Docs:
+https://finnigantechnology.notion.site/Blacklist-Documentation-153f134a0b3f809dbbbcf2ccb07839d0
+
 Blacklist was created for the public to report scams or malicious addresses. Each report is a set of addresses and transactions which demonstrate funds leaving your your wallet.
 
 `publicReports` is a map of address => `ScammerAddressRecord[]` 
